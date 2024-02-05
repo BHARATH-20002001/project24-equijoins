@@ -75,10 +75,32 @@ def emp_mgr_dept(request):
     emd = Emp.objects.select_related('deptno','mgr').filter(Q(sal__gte=2000) | Q(hiredate__year__gte=2024))
     emd = Emp.objects.select_related('deptno','mgr').filter(Q(hiredate__year__lte=2023) | Q(sal__gte=2000))
 
-    
-
-    
-
-
     d = {'emd':emd}
     return render(request,'emp_mgr_dept.html',d)
+
+
+
+def emp_salgrade(request):
+
+    # EO = Emp.objects.all()
+    # SO = SalGrade.objects.all()
+    # d = {'EO':EO ,'SO':SO}
+
+    SO = SalGrade.objects.filter(grade__in=(1,2,3,4))
+    EO = Emp.objects.none()
+
+    SO = SalGrade.objects.filter(grade__in=(1,2))
+    EO = Emp.objects.none()
+
+    
+    for sgo in SO:
+        # EO = EO|Emp.objects.filter(sal__range=(sgo.losal,sgo.hisal))
+        # EO = EO|Emp.objects.filter(sal__range=(sgo.losal,sgo.hisal),ename='smith')
+        # EO = EO|Emp.objects.filter(sal__range=(sgo.losal,sgo.hisal),ename='smith')
+        EO = EO|Emp.objects.filter(sal__range=(sgo.losal,sgo.hisal),ename='smith')
+        
+    
+
+    d = {'EO':EO,'SO':SO}
+    return render(request,'emp_salgrade.html',d)
+    
